@@ -1,16 +1,49 @@
 package classregister.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import classregister.dto.BaseResponse;
+import classregister.service.ClassService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 public class ClassController {
+
+    @Autowired private final ClassService classService;
+
+    public ClassController(ClassService classService) {
+        this.classService = classService;
+    }
+
     @PostMapping("class")
-    public String getClass(@RequestHeader("Authorization") String user,
-                           @RequestParam("id") String id ) {
-        return "";
+    public BaseResponse<String> registerClass(@RequestHeader("Authorization") Long user,
+                                 @RequestParam("id") Long id) {
+        try{
+            classService.registerClass(user, id);
+        }
+        catch(NullPointerException e){
+            return new BaseResponse<>(
+                    403,
+                    "인원수 제한 입니다.",
+                    "FAIL"
+            );
+        }
+
+        return new BaseResponse<>(
+                200,
+                "",
+                "OK"
+        );
+    }
+
+    @GetMapping("status")
+    public BaseResponse<String> getStauts(
+            @RequestParam("class_id") String classId,
+            @RequestParam("user_id") String userId) {
+        return new BaseResponse<>(
+                200,
+                "",
+                "OK"
+        );
     }
 
 }
