@@ -9,10 +9,13 @@ import classregister.repository.LectureRepository;
 import classregister.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ClassService {
 
     @Autowired ClassRepository classRepository;
@@ -39,11 +42,19 @@ public class ClassService {
             throw new NullPointerException("존재하지 않는 사용자입니다.");
         }
 
+        if (isLimited(lecture.get().getId())) {
+            throw new NullPointerException("사용자 제한이 있습니다.");
+        }
+
         Class saveObject = new Class(
             new ClassId(member.get().getId(), lecture.get().getId())
         );
 
         return classRepository.save(saveObject);
+    }
+
+    private boolean isLimited(Long lectureId){
+        return classRepository.findAllByLectureId(lectureId).size() >= 30;
     }
 
 }

@@ -2,6 +2,8 @@ package classregister.repository;
 
 import classregister.domain.Member;
 import jakarta.persistence.EntityManager;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -10,6 +12,13 @@ public class H2MemberRepository implements MemberRepository {
 
     public H2MemberRepository(EntityManager em) {
         this.em = em;
+    }
+
+    @Override
+    public Member save() {
+        Member result = new Member();
+        this.em.persist(result);
+        return result;
     }
 
     @Override

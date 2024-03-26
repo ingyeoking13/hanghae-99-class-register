@@ -7,5 +7,7 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository {
+    Member save();
     Optional<Member> findById(Long memberId);
 }
+

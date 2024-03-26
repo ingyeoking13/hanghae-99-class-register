@@ -4,7 +4,10 @@ package classregister.repository;
 import classregister.domain.Class;
 import classregister.domain.ClassId;
 import jakarta.persistence.EntityManager;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public class H2ClassRepository implements ClassRepository {
@@ -22,7 +25,11 @@ public class H2ClassRepository implements ClassRepository {
     }
 
     @Override
-    public Optional<Class> findById(String classId) {
-        return Optional.empty();
+    public List<Class> findAllByLectureId(Long lectureId) {
+        List<Class> result = this.em.createQuery(
+                "select c from Class c where c.classId.lectureId = :lecture_id", Class.class
+                ).setParameter("lecture_id", lectureId)
+                .getResultList();
+        return result;
     }
 }

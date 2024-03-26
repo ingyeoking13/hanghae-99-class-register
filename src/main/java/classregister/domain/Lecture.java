@@ -14,8 +14,11 @@ public class Lecture {
     @Column(name="start_time")
     private LocalDateTime startTime;
 
-    public Lecture(Long id, String name, LocalDateTime startTime){
-        this.id = id;
+    public Lecture(){
+
+    }
+
+    public Lecture(String name, LocalDateTime startTime){
         this.name = name;
         this.startTime = startTime;
     }
