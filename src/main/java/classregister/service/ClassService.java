@@ -28,15 +28,9 @@ public class ClassService {
         this.memberRepository = memberRepository;
     }
 
-    public void registerClass(Long memberId, Long classId) {
+    public Class registerClass(Long memberId, Long classId) {
         Optional<Lecture> lecture = lectureRepository.findById(classId);
         Optional<Member> member = memberRepository.findById(memberId);
-        if (lecture.isPresent() && member.isPresent()){
-            classRepository.save(new Class(
-                    new ClassId(member.get().getId(), lecture.get().getId())
-            ));
-            return;
-        }
         if (lecture.isEmpty()) {
             throw new NullPointerException("존재하지 않는 수업입니다.");
         }
@@ -45,6 +39,11 @@ public class ClassService {
             throw new NullPointerException("존재하지 않는 사용자입니다.");
         }
 
+        Class saveObject = new Class(
+            new ClassId(member.get().getId(), lecture.get().getId())
+        );
+
+        return classRepository.save(saveObject);
     }
 
 }

@@ -2,6 +2,7 @@ package classregister.domain;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,6 +13,13 @@ public class Lecture {
     private String name;
     @Column(name="start_time")
     private LocalDateTime startTime;
+
+    public Lecture(Long id, String name, LocalDateTime startTime){
+        this.id = id;
+        this.name = name;
+        this.startTime = startTime;
+    }
+
 
     public Long getId() {
         return id;

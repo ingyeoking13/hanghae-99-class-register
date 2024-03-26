@@ -2,6 +2,7 @@ package classregister.repository;
 
 
 import classregister.domain.Class;
+import classregister.domain.ClassId;
 import jakarta.persistence.EntityManager;
 
 import java.util.Optional;
@@ -15,8 +16,9 @@ public class H2ClassRepository implements ClassRepository {
     }
 
     @Override
-    public void save(Class classObj) {
+    public Class save(Class classObj) {
         this.em.persist(classObj);
+        return classObj;
     }
 
     @Override
