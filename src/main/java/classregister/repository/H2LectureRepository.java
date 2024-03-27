@@ -2,14 +2,16 @@ package classregister.repository;
 
 import classregister.domain.Lecture;
 import jakarta.persistence.EntityManager;
-import org.springframework.transaction.annotation.Isolation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Transactional
 public class H2LectureRepository implements LectureRepository{
 
+    @Autowired
     private final EntityManager em;
 
     public H2LectureRepository(EntityManager em) {

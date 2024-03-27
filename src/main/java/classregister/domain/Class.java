@@ -9,6 +9,9 @@ public class Class {
     @EmbeddedId
     private ClassId classId;
 
+    public Class(){
+    }
+
     public Class(ClassId classId) {
         this.classId = classId;
     }

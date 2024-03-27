@@ -7,11 +7,11 @@ import classregister.domain.Member;
 import classregister.repository.ClassRepository;
 import classregister.repository.LectureRepository;
 import classregister.repository.MemberRepository;
+
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,8 +31,8 @@ public class ClassService {
         this.memberRepository = memberRepository;
     }
 
-    public Class registerClass(Long memberId, Long classId) {
-        Optional<Lecture> lecture = lectureRepository.findById(classId);
+    public Class registerClass(Long memberId, Long lectureId) {
+        Optional<Lecture> lecture = lectureRepository.findById(lectureId);
         Optional<Member> member = memberRepository.findById(memberId);
         if (lecture.isEmpty()) {
             throw new NullPointerException("존재하지 않는 수업입니다.");

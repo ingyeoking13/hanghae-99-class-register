@@ -1,43 +1,57 @@
 package classregister.service;
 
-import classregister.repository.LectureRepository;
-import classregister.repository.MemberRepository;
+import classregister.repository.*;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SpringBootTest
 @Transactional
+@Rollback(value = false)
 public class ServiceIntegrationTest {
     @Autowired
     private ClassService classService;
+    @Autowired
+    private EntityManager em;
 
     @Autowired
-    private LectureRepository lectureRepository;
+    private H2ClassRepository classRepository;
 
     @Autowired
-    private MemberRepository memberRepository;
+    private H2LectureRepository lectureRepository;
 
-    @BeforeEach
+    @Autowired
+    private H2MemberRepository memberRepository;
+
+//    @BeforeEach
+//    @org.springframework.transaction.annotation.Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Commit
     public void insertMemberAndLecture(){
-        lectureRepository.save("A", LocalDateTime.now());
-        lectureRepository.save("B", LocalDateTime.now());
-        lectureRepository.save("C", LocalDateTime.now());
+        this.lectureRepository.save("A", LocalDateTime.now());
+        this.lectureRepository.save("B", LocalDateTime.now());
+        this.lectureRepository.save("C", LocalDateTime.now());
 
-        for (int i=0; i<31; i++) {
-            memberRepository.save();
+        for (int i=0; i<60; i++) {
+            this.memberRepository.save();
         }
     }
 
@@ -61,25 +75,33 @@ public class ServiceIntegrationTest {
 
     @Test
     public void test_동시성환경테스트() throws Exception {
+
         // given
-        int numThreads = 30;
+        int numThreads = 60;
+
         ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
         CountDownLatch doneSignal = new CountDownLatch(numThreads);
+        AtomicInteger s = new AtomicInteger(0);
+        AtomicInteger f = new AtomicInteger(0);
 
-        // when
+         // when
         for (int i=1; i<=numThreads; i++) {
-            Long longI = (long)i;
+            long finalI = i;
             executorService.execute(() -> {
-                classService.registerClass(longI, 1L);
+                try {
+                    this.classService.registerClass(finalI, 1L);
+                    s.incrementAndGet();
+                } catch(Exception e) {
+                    System.out.println(e);
+                    f.incrementAndGet();
+                }
                 doneSignal.countDown();
             });
         }
-
         doneSignal.await();
 
+        Assertions.assertThat(s.get()).isEqualTo(30);
+        Assertions.assertThat(f.get()).isEqualTo(30);
     }
-
-
-
 }
 

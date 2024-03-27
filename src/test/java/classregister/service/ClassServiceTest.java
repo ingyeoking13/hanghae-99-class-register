@@ -24,16 +24,16 @@ import static org.mockito.ArgumentMatchers.any;
 
 class ClassServiceTest {
     private ClassService classService;
-    @Mock private ClassRepository classRepository;
-    @Mock private MemberRepository memberRepository;
-    @Mock private LectureRepository lectureRepository;
+    @Mock private H2ClassRepository classRepository;
+    @Mock private H2MemberRepository memberRepository;
+    @Mock private H2LectureRepository lectureRepository;
 
     @BeforeEach
     void beforeEach() {
         classRepository = Mockito.mock(H2ClassRepository.class);
         lectureRepository = Mockito.mock(H2LectureRepository.class);
         memberRepository = Mockito.mock(H2MemberRepository.class);
-        classService = new ClassService(
+        this.classService = new ClassService(
                 classRepository,
                 lectureRepository,
                 memberRepository
