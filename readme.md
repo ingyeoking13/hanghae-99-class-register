@@ -1,5 +1,10 @@
 # 특강 신청 서비스 
 
+ERD
+![](screenshot.png)
+
+quantity -> lock 용도 
+
 ## API 명세서
 1. 특강 신청 API   
 `POST /class?id={id}`  
