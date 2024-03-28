@@ -2,10 +2,8 @@ package classregister.repository;
 
 
 import classregister.domain.Class;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.Query;
+import jakarta.persistence.*;
+import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Isolation;
@@ -13,37 +11,42 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
 public class H2ClassRepository implements ClassRepository {
 
 
     @Autowired
+    private final EntityManagerFactory emf;
+
     private final EntityManager em;
 
-    public H2ClassRepository(EntityManager em) {
-        this.em = em;
+    public H2ClassRepository(EntityManagerFactory emf) {
+        this.emf= emf;
+        this.em = this.emf.createEntityManager();
     }
 
     @Override
     public Class save(Class classObj) {
-        final Query lockQuery = em.createNativeQuery("SELECT * FROM class FOR UPDATE;");
-        em.joinTransaction();
-        lockQuery.getResultList();
-        this.em.persist(classObj);
-
+        EntityManager cur_em = this.emf.createEntityManager();
+        EntityTransaction tx = cur_em.getTransaction();
+        tx.begin();
+        cur_em.persist(classObj);
+        tx.commit();
         return classObj;
     }
 
     @Override
     public List<Class> findAllByLectureId(Long lectureId) {
-        final Query lockQuery = em.createNativeQuery("SELECT * FROM class FOR UPDATE;");
-        em.joinTransaction();
-        lockQuery.getResultList();
-        List<Class> result = this.em.createQuery(
+        EntityManager cur_em = this.emf.createEntityManager();
+        EntityTransaction tx = cur_em.getTransaction();
+        tx.begin();
+
+        List<Class> result = cur_em.createQuery(
                 "select c from Class c where c.classId.lectureId = :lecture_id", Class.class
                 ).setParameter("lecture_id", lectureId)
-                .setLockMode(LockModeType.PESSIMISTIC_READ)
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .getResultList();
+        tx.commit();
         return result;
     }
+
 }

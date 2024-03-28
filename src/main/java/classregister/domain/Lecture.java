@@ -14,13 +14,17 @@ public class Lecture {
     @Column(name="start_time")
     private LocalDateTime startTime;
 
+    @Column
+    private Long quantity;
+
     public Lecture(){
 
     }
 
-    public Lecture(String name, LocalDateTime startTime){
+    public Lecture(String name, LocalDateTime startTime, Long quantity){
         this.name = name;
         this.startTime = startTime;
+        this.quantity = quantity;
     }
 
 
@@ -36,6 +40,8 @@ public class Lecture {
         return startTime;
     }
 
+    public Long getQuantity() { return quantity;}
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -47,4 +53,7 @@ public class Lecture {
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
+
+    public void setQuantity(Long quantity) { this.quantity = quantity; }
+
 }

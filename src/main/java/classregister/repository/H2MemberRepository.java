@@ -2,26 +2,30 @@ package classregister.repository;
 
 import classregister.domain.Member;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Transactional
 public class H2MemberRepository implements MemberRepository {
 
     @Autowired
+    private final EntityManagerFactory emf;
     private final EntityManager em;
 
-    public H2MemberRepository(EntityManager em) {
-        this.em = em;
+    public H2MemberRepository(EntityManagerFactory emf) {
+        this.emf = emf;
+        this.em = this.emf.createEntityManager();
     }
 
     @Override
     public Member save() {
         Member result = new Member();
+        EntityTransaction tx = this.em.getTransaction();
+        tx.begin();
         this.em.persist(result);
+        tx.commit();
         return result;
     }
 

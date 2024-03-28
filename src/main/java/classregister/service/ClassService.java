@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -42,7 +43,7 @@ public class ClassService {
             throw new NullPointerException("존재하지 않는 사용자입니다.");
         }
 
-        if (isLimited(lecture.get().getId())) {
+        if (lectureRepository.isLimitedOrDecrease(lecture.get().getId())) {
             throw new NullPointerException("사용자 제한이 있습니다.");
         }
 
@@ -53,8 +54,11 @@ public class ClassService {
         return classRepository.save(saveObject);
     }
 
-    private boolean isLimited(Long lectureId){
-        return classRepository.findAllByLectureId(lectureId).size() >= 30;
+    public void registerMember(){
+        this.memberRepository.save();
     }
 
+    public void registerLecture(String name){
+        this.lectureRepository.save(name, LocalDateTime.now());
+    }
 }

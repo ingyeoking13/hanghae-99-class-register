@@ -46,7 +46,7 @@ class ClassServiceTest {
 
         Mockito.doReturn(Optional.of(new Member())).when(memberRepository).findById(1L);
         Mockito.doReturn(
-                Optional.of(new Lecture("A", LocalDateTime.now()))
+                Optional.of(new Lecture("A", LocalDateTime.now(), 30L))
         ).when(lectureRepository).findById(1L);
 
         ClassId classIdObj = new ClassId(1L, 1L);
@@ -63,7 +63,7 @@ class ClassServiceTest {
     void test_수강신청_실패_회원없음() {
         Mockito.doReturn(Optional.empty()).when(memberRepository).findById(1L);
         Mockito.doReturn(
-                Optional.of(new Lecture("A", LocalDateTime.now()))
+                Optional.of(new Lecture("A", LocalDateTime.now(), 30L))
         ).when(lectureRepository).findById(1L);
 
         ClassId classIdObj = new ClassId(1L, 1L);
@@ -102,7 +102,7 @@ class ClassServiceTest {
 
         Mockito.doReturn(Optional.of(new Member())).when(memberRepository).findById(1L);
         Mockito.doReturn(
-                Optional.of(new Lecture( "A", LocalDateTime.now()))
+                Optional.of(new Lecture( "A", LocalDateTime.now(), 30L))
         ).when(lectureRepository).findById(1L);
 
         ClassId classIdObj = new ClassId(1L, 1L);
