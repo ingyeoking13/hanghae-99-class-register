@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface ClassRepository {
     Class save(Class classObj);
     List<Class> findAllByLectureId(Long classId);
+    Optional<Class> findById(ClassId classId);
 }

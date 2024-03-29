@@ -61,4 +61,9 @@ public class ClassService {
     public void registerLecture(String name){
         this.lectureRepository.save(name, LocalDateTime.now());
     }
+
+    public boolean getMemberStatus(Long lectureId, Long memberId) {
+        Optional<Class> result = this.classRepository.findById(new ClassId(memberId, lectureId));
+        return !result.isEmpty();
+    }
 }

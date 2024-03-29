@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,6 +56,30 @@ class ClassControllerTest {
     }
 
     @Test
-    void test_getStauts() {
+    void test_수강_조회_성공() throws Exception {
+        Mockito.doReturn(true).when(classService).getMemberStatus(1L, 1L);
+        mockMvc.perform(get("/status?lecture_id=1&member_id=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(
+                        "{" +
+                                "\"statusCode\": 200, " +
+                                "\"result\": \"OK\", " +
+                                "\"message\": \"\"" +
+                                "}")
+                );
+    }
+
+    @Test
+    void test_수강_조회_실패() throws Exception {
+        Mockito.doReturn(false).when(classService).getMemberStatus(1L, 1L);
+        mockMvc.perform(get("/status?lecture_id=1&member_id=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(
+                        "{" +
+                                "\"statusCode\": 200, " +
+                                "\"result\": \"FAIL\", " +
+                                "\"message\": \"\"" +
+                                "}")
+                );
     }
 }

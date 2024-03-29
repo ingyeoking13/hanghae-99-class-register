@@ -2,6 +2,7 @@ package classregister.repository;
 
 
 import classregister.domain.Class;
+import classregister.domain.ClassId;
 import jakarta.persistence.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public class H2ClassRepository implements ClassRepository {
 
@@ -17,11 +19,8 @@ public class H2ClassRepository implements ClassRepository {
     @Autowired
     private final EntityManagerFactory emf;
 
-    private final EntityManager em;
-
     public H2ClassRepository(EntityManagerFactory emf) {
         this.emf= emf;
-        this.em = this.emf.createEntityManager();
     }
 
     @Override
@@ -47,6 +46,19 @@ public class H2ClassRepository implements ClassRepository {
                 .getResultList();
         tx.commit();
         return result;
+    }
+
+    public Optional<Class> findById(ClassId classId) {
+        EntityManager cur_em = this.emf.createEntityManager();
+        EntityTransaction tx = cur_em.getTransaction();
+        tx.begin();
+        Optional<Class> result = Optional.ofNullable(cur_em.find(
+                Class.class,
+                classId
+        ));
+        tx.commit();
+        return result;
+
     }
 
 }

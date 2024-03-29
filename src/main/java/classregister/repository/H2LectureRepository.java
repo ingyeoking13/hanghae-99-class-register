@@ -16,25 +16,25 @@ public class H2LectureRepository implements LectureRepository{
 
     @Autowired
     private final EntityManagerFactory emf;
-    private final EntityManager em;
 
     public H2LectureRepository(EntityManagerFactory emf) {
         this.emf = emf;
-        this.em = this.emf.createEntityManager();
     }
 
     @Override
     public Lecture save(String name, LocalDateTime startTime) {
         Lecture result = new Lecture(name, startTime, 30L);
-        EntityTransaction tx = this.em.getTransaction();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
         tx.begin();
-        this.em.persist(result);
+        em.persist(result);
         tx.commit();
         return result;
     }
 
     @Override
     public Optional<Lecture> findById(Long lectureId) {
+        EntityManager em = emf.createEntityManager();
         return Optional.ofNullable(em.find(Lecture.class, lectureId));
     }
 

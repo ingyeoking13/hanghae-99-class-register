@@ -12,25 +12,25 @@ public class H2MemberRepository implements MemberRepository {
 
     @Autowired
     private final EntityManagerFactory emf;
-    private final EntityManager em;
 
     public H2MemberRepository(EntityManagerFactory emf) {
         this.emf = emf;
-        this.em = this.emf.createEntityManager();
     }
 
     @Override
     public Member save() {
         Member result = new Member();
-        EntityTransaction tx = this.em.getTransaction();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
         tx.begin();
-        this.em.persist(result);
+        em.persist(result);
         tx.commit();
         return result;
     }
 
     @Override
     public Optional<Member> findById(Long memberId) {
+        EntityManager em = emf.createEntityManager();
         return Optional.ofNullable(em.find(Member.class, memberId));
     }
 }

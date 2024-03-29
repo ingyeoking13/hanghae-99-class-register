@@ -37,12 +37,13 @@ public class ClassController {
 
     @GetMapping("status")
     public BaseResponse<String> getStauts(
-            @RequestParam("class_id") String classId,
-            @RequestParam("user_id") String userId) {
+            @RequestParam("lecture_id") Long lectureId,
+            @RequestParam("member_id") Long memberId) {
+        boolean result = classService.getMemberStatus(lectureId, memberId);
         return new BaseResponse<>(
                 200,
                 "",
-                "OK"
+                result?"OK":"FAIL"
         );
     }
 
